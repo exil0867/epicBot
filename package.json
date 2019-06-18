@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/ExillustX/EpicBot/issues"
   },
-  "homepage": "https://github.com/ExillustX/EpicBot#readme"
+  "homepage": "https://github.com/ExillustX/EpicBot#readme",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.0.0"
+  }
 }
