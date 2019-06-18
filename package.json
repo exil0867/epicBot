@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ExillustX/epicBot.git"
+    "url": "git+https://github.com/ExillustX/EpicBot.git"
   },
   "author": "ExillustX",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ExillustX/epicBot/issues"
+    "url": "https://github.com/ExillustX/EpicBot/issues"
   },
-  "homepage": "https://github.com/ExillustX/epicBot#readme"
+  "homepage": "https://github.com/ExillustX/EpicBot#readme"
 }
