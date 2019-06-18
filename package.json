@@ -19,6 +19,8 @@
   "homepage": "https://github.com/ExillustX/EpicBot#readme",
   "dependencies": {
     "discord.js": "^11.5.1",
-    "dotenv": "^8.0.0"
+    "dotenv": "^8.0.0",
+    "mysql2": "^1.6.5",
+    "sequelize": "^5.8.10"
   }
 }
