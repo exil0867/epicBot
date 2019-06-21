@@ -1,7 +1,7 @@
 interval = require('../modules/activeUsers/interval');
 
 exports.run = (bot, msg, args) => {
-  if (args !== 'update') {
+  if (args[0] !== 'update') {
     return;
   }
   interval.run();
