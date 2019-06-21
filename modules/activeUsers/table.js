@@ -17,7 +17,7 @@ const table = sequelize.define('active_plebs', {
   },
   last_time_being_active: {
     type: Sequelize.STRING
-  }
+  },
   being_active_since: {
     type: Sequelize.STRING
   },
