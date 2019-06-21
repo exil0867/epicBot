@@ -1,16 +1,16 @@
 const Sequelize = require('sequelize');
-const table = require('./table.js');
+const table = require('./table');
 
-exports.sync = (dbHost, dbName, dbUser, dbPassword, dbTableName) => {
-  const instance = new Sequelize('', dbUser, dbPassword, {
+exports.run = (dbHost, dbName, dbUser, dbPassword, dbTableName) => {
+  const sequelize = new Sequelize('', dbUser, dbPassword, {
     host: dbHost,
     dialect: 'mysql',
     logging: false,
   });
-  instance.query(`SHOW DATABASES LIKE '${dbName}'`).then(databases => {
+  sequelize.query(`SHOW DATABASES LIKE '${dbName}'`).then(databases => {
     if (!Array.isArray(databases[0]) || !databases[0].length) {
       console.log('Couldnt\'t find a databases! Creating one...')
-      instance.query(`CREATE DATABASE ${dbName}`).then(() => {
+      sequelize.query(`CREATE DATABASE ${dbName}`).then(() => {
         table.sync(dbHost, dbName, dbUser, dbPassword, dbTableName);
       });
       return;

@@ -1,5 +1,8 @@
+interval = require('../modules/activeUsers/interval');
+
 exports.run = (bot, msg, args) => {
-  msg.channel.send('Pong!');
+  interval.run();
+  msg.channel.send('ok!');
 };
 exports.help = {
   name: 'ping',

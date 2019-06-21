@@ -1,28 +1,26 @@
 const Sequelize = require('sequelize');
+const sequelize = require('./sequelize');
 
+const table = sequelize.define('active_plebs', {
+  user_id: {
+    type: Sequelize.STRING,
+    primaryKey: true
+  },
+  user_tag: {
+    type: Sequelize.STRING
+  },
+  daily_messages_count: {
+    type: Sequelize.INTEGER
+  },
+  has_active_role_since: {
+    type: Sequelize.STRING
+  },
+  being_active_since: {
+    type: Sequelize.STRING
+  },
+  last_time_being_active: {
+    type: Sequelize.STRING
+  }
+});
 
-exports.sync = (dbHost, dbName, dbUser, dbPassword, dbTableName) => {
-  const instance = new Sequelize(dbName, dbUser, dbPassword, {
-    host: dbHost,
-    dialect: 'mysql',
-    logging: false,
-  });
-  instance.define(dbTableName, {
-    id: {
-      type: Sequelize.INTEGER,
-      unique: true,
-      primaryKey: true
-    },
-    user_tag: {
-      type: Sequelize.STRING,
-    },
-    has_active_role: {
-      type: Sequelize.BOOLEAN
-    },
-    preactive_data: {
-      type: Sequelize.STRING,
-    }
-  }).sync().then(() => {
-    console.log(`Creating/Syncing table: ${dbTableName}`)
-  });
-};
+module.exports = table;
