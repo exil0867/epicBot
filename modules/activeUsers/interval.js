@@ -58,7 +58,7 @@ exports.run = async () => {
     // If user was active but then stopped being active
     if ((beingActiveSince !== null) && (dateNow.diff(moment(lastTimeBeingActive), 'days') >= env.process.DAYS_TO_LOSE_ACTIVE_ROLE)) {
       console.log(`Removing the active role from the user: ${userId}`)
-      manageActiveRole('remove', process.env.SERVER_ID, , process.env.ACTIVE_ROLE_ID);
+      manageActiveRole('remove', process.env.SERVER_ID, process.env.ACTIVE_ROLE_ID);
       table.update({ has_active_role_since: dateNow.format('YYYY-MM-DD'), being_active_since: null }, { where: { user_id: userId } });
     }
     // Clear all daily messages count for the last day
