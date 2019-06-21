@@ -50,18 +50,15 @@ exports.run = async () => {
     const lastTimeBeingActive = user.last_time_being_active;
     const userId = user.user_id;
     // If user started being active
-    if ((beingActiveSince !== null) && (dateNow.diff(moment(beingActiveSince), 'days') >= 3) && (hasActiveRoleSince === null)) {
-      console.log('if 1 executed for user ' + userId);
-      // console.log(`Detected user ${user.user_id} as being active. Will add the role!`);
+    if ((beingActiveSince !== null) && (dateNow.diff(moment(beingActiveSince), 'days') >= env.process.DAYS_TO_GET_ACTIVE_ROLE) && (hasActiveRoleSince === null)) {
+      console.log(`Adding the active role to the user: ${userId}`)
       manageActiveRole('add', process.env.SERVER_ID, userId, process.env.ACTIVE_ROLE_ID);
       table.update({ has_active_role_since: dateNow.format('YYYY-MM-DD') }, { where: { user_id: userId } });
     }
     // If user was active but then stopped being active
-    if ((beingActiveSince !== null) && (dateNow.diff(moment(lastTimeBeingActive), 'days') >= 3)) {
-      console.log(dateNow);
-      console.log(moment(beingActiveSince));
-      console.log('if 2 executed for user ' + userId);
-      manageActiveRole('remove', process.env.SERVER_ID, userId, process.env.ACTIVE_ROLE_ID);
+    if ((beingActiveSince !== null) && (dateNow.diff(moment(lastTimeBeingActive), 'days') >= env.process.DAYS_TO_LOSE_ACTIVE_ROLE)) {
+      console.log(`Removing the active role from the user: ${userId}`)
+      manageActiveRole('remove', process.env.SERVER_ID, , process.env.ACTIVE_ROLE_ID);
       table.update({ has_active_role_since: dateNow.format('YYYY-MM-DD'), being_active_since: null }, { where: { user_id: userId } });
     }
     // Clear all daily messages count for the last day
