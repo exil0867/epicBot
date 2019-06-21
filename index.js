@@ -39,9 +39,10 @@ client.on('ready', () => {
     console.log(`Generated invite link:\n${invite}`);
   });
   databaseAndTableSync.run(process.env.DB_HOST, process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, process.env.ACTIVE_USERS_TABLE_NAME);
-  // setInterval(function() {
-    // interval.run()
-  // }, process.env.RUN_INTERVAL_EVERY);
+  setInterval(function() {
+    interval.run()
+  }, process.env.RUN_INTERVAL_EVERY);
+
 });
 
 client.on('message', message => {
@@ -60,6 +61,8 @@ client.on('message', message => {
   }
 
 });
+
+
 
 client.on('message', message => {
   if (message.author.bot || !message.guild) {

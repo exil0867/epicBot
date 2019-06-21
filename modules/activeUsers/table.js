@@ -15,10 +15,13 @@ const table = sequelize.define('active_plebs', {
   has_active_role_since: {
     type: Sequelize.STRING
   },
+  last_time_being_active: {
+    type: Sequelize.STRING
+  }
   being_active_since: {
     type: Sequelize.STRING
   },
-  last_time_being_active: {
+  last_message_time: {
     type: Sequelize.STRING
   }
 });

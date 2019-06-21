@@ -1,9 +1,10 @@
 require('dotenv').config();
 const Sequelize = require('sequelize');
+const moment = require('moment');
 const table = require('./table');
 
 exports.listen = async (bot, msg, args) => {
-  const date = new Date().toISOString().slice(0, 10);
+  const dateNow = moment();
   idObject = {
     user_id: msg.member.user.id
   };
@@ -11,12 +12,17 @@ exports.listen = async (bot, msg, args) => {
   if (id) {
     if (id.get('daily_messages_count') >= process.env.DAILY_MAX_MESSAGES) {
       console.log('User has already reached their daily max messages count, and marked them as being active!');
-      await id.update({ being_active_since: date, last_time_being_active: date }, { where: idObject });
-      return;
+      if (id.get('being_active_since') === null) {
+        await id.update({ being_active_since: dateNow.format('YYYY-MM-DD'), last_time_being_active: dateNow.format('YYYY-MM-DD'), last_message_time: dateNow.format('YYYY-MM-DD') }, { where: idObject });
+        return;
+      } else {
+        await id.update({ last_time_being_active: dateNow.format('YYYY-MM-DD'), last_message_time: dateNow.format('YYYY-MM-DD') }, { where: idObject });
+        return;
+      }
     }
     await id.increment('daily_messages_count');
-    await id.update({ last_time_being_active: date }, { where: idObject });
-    console.log(`Counted a message from ${msg.member.user.tag}, Their daily total messages is now: ${id.get('daily_messages_count')}`);
+    await id.update({ last_message_time: dateNow.format('YYYY-MM-DD') }, { where: idObject });
+    console.log(`Counted a message from ${msg.member.user.tag}, Their daily total messages is now: ${id.get('daily_messages_count') + 1}`);
 
   } else {
     try {
@@ -25,8 +31,9 @@ exports.listen = async (bot, msg, args) => {
         user_tag: msg.member.user.tag,
         daily_messages_count: 1,
         has_active_role_since: null,
+        last_time_being_active: null,
         being_active_since: null,
-        last_time_being_active: date
+        last_message_time: dateNow.format('YYYY-MM-DD')
       });
       console.log('Added new user to the database!');
     } catch (e) {

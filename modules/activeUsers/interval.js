@@ -1,27 +1,74 @@
 require('dotenv').config();
 const Sequelize = require('sequelize');
+const moment = require('moment');
 const table = require('./table');
+const ind = require('../../index.js');
+const { Client } = require('discord.js');
+const client = new Client();
+const config = {
+  token: process.env.TOKEN,
+  prefix: process.env.PREFIX
+};
 
-function daysDiff(firstDate, secondDate) {
-  return Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / (24 * 60 * 60 * 1000)));
+client.config = config;
+
+async function manageActiveRole(action, serverId, memberId, roleId) {
+  const member = client.guilds.get(serverId).members.get(memberId);
+  if (action === 'add') {
+    if (!member.roles.has(roleId)) {
+      member.addRole(roleId).then(() => {
+        console.log('Added the role to the user');
+      }).catch((error) => {
+        console.error(error);
+      });
+    } else {
+      console.log('The user already has the role!');
+    }
+  }
+  if (action === 'remove') {
+    if (member.roles.has(roleId)) {
+      member.removeRole(roleId).then(() => {
+        console.log('Removed the role from the user!');
+      }).catch((error) => {
+        console.log(error);
+        console.log(`Couldn't remove the role from the user!`);
+      });
+    } else {
+      console.log(`The user already doesn't have the role!`);
+    }
+  }
 }
 
+
 exports.run = async () => {
-  const usersListQuery = await table.findAll({ attributes: ['user_id', 'being_active_since', 'has_active_role_since', 'daily_messages_count'] });
-  usersListQuery.map( (user) => {
-    const dateNow = new Date();
+  const usersListQuery = await table.findAll({ attributes: ['user_id', 'being_active_since', 'has_active_role_since', 'daily_messages_count', 'last_time_being_active'] });
+  usersListQuery.map((user) => {
+    const dateNow = moment();
     const beingActiveSince = user.being_active_since;
     const hasActiveRoleSince = user.has_active_role_since;
     const dailyMessagesCount = user.daily_messages_count;
+    const lastTimeBeingActive = user.last_time_being_active;
     const userId = user.user_id;
-    if ((beingActiveSince !== null) && (daysDiff(new Date(), new Date(beingActiveSince)) >= 5)) {
-      console.log(`Detected user ${user.user_id} as being active. Will add the role!`);
+    // If user started being active
+    if ((beingActiveSince !== null) && (dateNow.diff(moment(beingActiveSince), 'days') >= 3) && (hasActiveRoleSince === null)) {
+      console.log('if 1 executed for user ' + userId);
+      // console.log(`Detected user ${user.user_id} as being active. Will add the role!`);
+      manageActiveRole('add', process.env.SERVER_ID, userId, process.env.ACTIVE_ROLE_ID);
+      table.update({ has_active_role_since: dateNow.format('YYYY-MM-DD') }, { where: { user_id: userId } });
     }
-    if ((hasActiveRoleSince !== null) && (beingActiveSince !== null)(daysDiff(new Date(), new Date(beingActiveSince)) <= 5)) {
-      console.log(`Detected user ${user.user_id} as not being active. Will remove the role!`);
+    // If user was active but then stopped being active
+    if ((beingActiveSince !== null) && (dateNow.diff(moment(lastTimeBeingActive), 'days') >= 3)) {
+      console.log(dateNow);
+      console.log(moment(beingActiveSince));
+      console.log('if 2 executed for user ' + userId);
+      manageActiveRole('remove', process.env.SERVER_ID, userId, process.env.ACTIVE_ROLE_ID);
+      table.update({ has_active_role_since: dateNow.format('YYYY-MM-DD'), being_active_since: null }, { where: { user_id: userId } });
     }
+    // Clear all daily messages count for the last day
     if (dailyMessagesCount > 0) {
       table.update({ daily_messages_count: 0 }, { where: { user_id: userId } })
     }
   });
 }
+
+client.login(config.token);
