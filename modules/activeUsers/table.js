@@ -1,7 +1,8 @@
+require('dotenv').config();
 const Sequelize = require('sequelize');
 const sequelize = require('./sequelize');
 
-const table = sequelize.define('active_plebs', {
+const table = sequelize.define(process.env.ACTIVE_USERS_TABLE_NAME, {
   user_id: {
     type: Sequelize.STRING,
     primaryKey: true
