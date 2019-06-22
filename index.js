@@ -4,7 +4,6 @@ const fs = require('fs');
 const { Client } = require('discord.js');
 const client = new Client();
 const commandsMap = new Map();
-const databaseAndTableSync = require('./modules/activeUsers/database');
 const interval = require('./modules/activeUsers/interval');
 const config = {
   token: process.env.TOKEN,
@@ -39,7 +38,6 @@ client.on('ready', () => {
   ]).then(invite => {
     console.log(`Generated invite link:\n${invite}`);
   });
-  databaseAndTableSync.run(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_DIALECT, process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, process.env.ACTIVE_USERS_TABLE_NAME);
   setInterval(function() {
     interval.run()
   }, process.env.RUN_INTERVAL_EVERY);
