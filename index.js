@@ -11,6 +11,8 @@ const config = {
   prefix: process.env.PREFIX
 };
 
+module.exports = config;
+
 client.config = config;
 
 client.commands = commandsMap;
@@ -62,8 +64,6 @@ client.on('message', message => {
   }
 
 });
-
-
 
 client.on('message', message => {
   if (message.author.bot || !message.guild) {

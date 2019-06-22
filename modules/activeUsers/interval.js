@@ -2,43 +2,11 @@ require('dotenv').config();
 const Sequelize = require('sequelize');
 const moment = require('moment');
 const table = require('./table');
-const ind = require('../../index.js');
 const { Client } = require('discord.js');
 const client = new Client();
-const config = {
-  token: process.env.TOKEN,
-  prefix: process.env.PREFIX
-};
+const index = require('../..');
 
-client.config = config;
-
-async function manageActiveRole(action, serverId, memberId, roleId) {
-  const member = client.guilds.get(serverId).members.get(memberId);
-  if (action === 'add') {
-    if (!member.roles.has(roleId)) {
-      member.addRole(roleId).then(() => {
-        console.log('Added the role to the user');
-      }).catch((error) => {
-        console.error(error);
-      });
-    } else {
-      console.log('The user already has the role!');
-    }
-  }
-  if (action === 'remove') {
-    if (member.roles.has(roleId)) {
-      member.removeRole(roleId).then(() => {
-        console.log('Removed the role from the user!');
-      }).catch((error) => {
-        console.log(error);
-        console.log(`Couldn't remove the role from the user!`);
-      });
-    } else {
-      console.log(`The user already doesn't have the role!`);
-    }
-  }
-}
-
+client.config = index.config;
 
 exports.run = async () => {
   const usersListQuery = await table.findAll({ attributes: ['user_id','user_tag' ,'being_active_since', 'has_active_role_since', 'daily_messages_count', 'last_time_being_active'] });
