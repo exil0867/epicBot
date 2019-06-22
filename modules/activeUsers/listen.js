@@ -35,7 +35,7 @@ exports.listen = async (bot, msg, args) => {
         being_active_since: null,
         last_message_time: dateNow.format('YYYY-MM-DD')
       });
-      console.log('Added new user to the database!');
+      console.log(`Added a new user ${msg.member.user.tag}: ${msg.member.user.id} to the database!`);
     } catch (e) {
       if (e.name === 'SequelizeUniqueConstraintError') {
         console.log('That user already exists.');
