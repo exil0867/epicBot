@@ -12,7 +12,7 @@ exports.listen = async (bot, msg, args) => {
   const dailyMessagesCount = id.get('daily_messages_count');
   if (id) {
     if (dailyMessagesCount >= process.env.DAILY_MAX_MESSAGES) {
-      console.log(`User ${msg.member.user.tag}: ${msg.member.user.id} has already reached their daily max messages count, and marked them as being active!`);
+      console.log(`User ${msg.member.user.tag}: ${msg.member.user.id} has already reached their daily max messages count!`);
       if (id.get('being_active_since') === null) {
         await id.update({ being_active_since: dateNow.format('YYYY-MM-DD'), last_time_being_active: dateNow.format('YYYY-MM-DD'), last_message_time: dateNow.format('YYYY-MM-DD') }, { where: idObject });
         return;
