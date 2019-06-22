@@ -38,6 +38,7 @@ client.on('ready', () => {
   ]).then(invite => {
     console.log(`Generated invite link:\n${invite}`);
   });
+  table.sync();
   setInterval(function() {
     interval.run()
   }, process.env.RUN_INTERVAL_EVERY);
