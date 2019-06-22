@@ -4,7 +4,7 @@ const table = require('./table');
 exports.run = (dbHost, dbName, dbUser, dbPassword, dbTableName) => {
   const sequelize = new Sequelize('', dbUser, dbPassword, {
     host: dbHost,
-    dialect: 'mysql',
+    dialect: 'postgres',
     logging: false,
   });
   sequelize.query(`SHOW DATABASES LIKE '${dbName}'`).then(databases => {
