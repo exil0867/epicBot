@@ -1,11 +1,12 @@
 const Sequelize = require('sequelize');
 const table = require('./table');
 
-exports.run = (dbHost, dbName, dbUser, dbPassword, dbTableName) => {
+exports.run = (dbHost, dbDialect, dbName, dbUser, dbPassword, dbTableName) => {
   const sequelize = new Sequelize('', dbUser, dbPassword, {
     host: dbHost,
-    dialect: 'postgres',
-    logging: false,
+    port: dbPort,
+    dialect: dbDialect,
+    logging: false
   });
   sequelize.query(`SHOW DATABASES LIKE '${dbName}'`).then(databases => {
     if (!Array.isArray(databases[0]) || !databases[0].length) {
