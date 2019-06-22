@@ -9,7 +9,7 @@ const index = require('../..');
 client.config = index.config;
 
 exports.run = async () => {
-  const usersListQuery = await table.findAll({ attributes: ['user_id','user_tag' ,'being_active_since', 'has_active_role_since', 'daily_messages_count', 'last_time_being_active'] });
+  const usersListQuery = await table.findAll({ attributes: ['user_id', 'user_tag', 'being_active_since', 'has_active_role_since', 'daily_messages_count', 'last_time_being_active'] });
   usersListQuery.map((user) => {
     const dateNow = moment();
     const beingActiveSince = user.being_active_since;

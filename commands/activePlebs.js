@@ -8,6 +8,7 @@ exports.run = (bot, msg, args) => {
   msg.channel.send('Updating active plebs list...');
   console.log('Updating active plebs list...');
 };
+
 exports.help = {
   name: 'activeplebs',
   usage: 'activeplebs',
