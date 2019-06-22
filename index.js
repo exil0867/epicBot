@@ -4,6 +4,7 @@ const fs = require('fs');
 const { Client } = require('discord.js');
 const client = new Client();
 const commandsMap = new Map();
+const table = require('./modules/activeUsers/table');
 const interval = require('./modules/activeUsers/interval');
 const config = {
   token: process.env.TOKEN,
