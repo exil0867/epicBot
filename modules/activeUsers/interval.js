@@ -37,4 +37,4 @@ exports.run = async () => {
   });
 }
 
-client.login(config.token);
+client.login(index.config.token);
