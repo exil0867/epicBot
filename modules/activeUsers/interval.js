@@ -4,9 +4,6 @@ const moment = require('moment');
 const table = require('./table');
 const { Client } = require('discord.js');
 const client = new Client();
-const index = require('../..');
-
-client.config = index.config;
 
 exports.run = async () => {
   const usersListQuery = await table.findAll({ attributes: ['user_id', 'user_tag', 'being_active_since', 'has_active_role_since', 'daily_messages_count', 'last_time_being_active'] });
@@ -37,4 +34,4 @@ exports.run = async () => {
   });
 }
 
-client.login(index.config.token);
+client.login(process.env.TOKEN);
