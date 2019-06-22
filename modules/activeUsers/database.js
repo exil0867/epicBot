@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const table = require('./table');
 
-exports.run = (dbHost, dbDialect, dbName, dbUser, dbPassword, dbTableName) => {
+exports.run = (dbHost, dbPort, dbDialect, dbName, dbUser, dbPassword, dbTableName) => {
   const sequelize = new Sequelize('', dbUser, dbPassword, {
     host: dbHost,
     port: dbPort,
