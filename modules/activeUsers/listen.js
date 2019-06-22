@@ -23,7 +23,7 @@ exports.listen = async (bot, msg, args) => {
     }
     await id.increment('daily_messages_count');
     await id.update({ last_message_time: dateNow.format('YYYY-MM-DD') }, { where: idObject });
-    console.log(`Counted a message from ${msg.member.user.tag}: ${msg.member.user.id}, Their daily total messages is now: ${dailyMessagesCount) + 1}`);
+    console.log(`Counted a message from ${msg.member.user.tag}: ${msg.member.user.id}, Their daily total messages is now: ${dailyMessagesCount + 1}`);
 
   } else {
     try {
