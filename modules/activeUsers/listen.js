@@ -9,9 +9,10 @@ exports.listen = async (bot, msg, args) => {
     user_id: msg.member.user.id
   };
   const id = await table.findOne({ where: idObject });
+  const dailyMessagesCount = id.get('daily_messages_count');
   if (id) {
-    if (id.get('daily_messages_count') >= process.env.DAILY_MAX_MESSAGES) {
-      console.log('User has already reached their daily max messages count, and marked them as being active!');
+    if (dailyMessagesCount >= process.env.DAILY_MAX_MESSAGES) {
+      console.log(`User ${msg.member.user.tag}: ${msg.member.user.id} has already reached their daily max messages count, and marked them as being active!`);
       if (id.get('being_active_since') === null) {
         await id.update({ being_active_since: dateNow.format('YYYY-MM-DD'), last_time_being_active: dateNow.format('YYYY-MM-DD'), last_message_time: dateNow.format('YYYY-MM-DD') }, { where: idObject });
         return;
@@ -22,7 +23,7 @@ exports.listen = async (bot, msg, args) => {
     }
     await id.increment('daily_messages_count');
     await id.update({ last_message_time: dateNow.format('YYYY-MM-DD') }, { where: idObject });
-    console.log(`Counted a message from ${msg.member.user.tag}, Their daily total messages is now: ${id.get('daily_messages_count') + 1}`);
+    console.log(`Counted a message from ${msg.member.user.tag}: ${msg.member.user.id}, Their daily total messages is now: ${dailyMessagesCount) + 1}`);
 
   } else {
     try {
