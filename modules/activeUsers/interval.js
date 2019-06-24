@@ -2,10 +2,13 @@ require('dotenv').config();
 const Sequelize = require('sequelize');
 const moment = require('moment');
 const table = require('./table');
-const { Client } = require('discord.js');
-const client = new Client();
+const functions = require('./functions');
 
 exports.run = async () => {
+  let result = {
+    added: [],
+    removed: []
+  };
   const usersListQuery = await table.findAll({ attributes: ['user_id', 'user_tag', 'being_active_since', 'daily_messages_count', 'last_time_being_active'] });
   usersListQuery.map((user) => {
     const dateNow = moment();
@@ -20,13 +23,14 @@ exports.run = async () => {
     }
     if (dateNow.diff(moment(beingActiveSince), 'days') >= process.env.DAYS_TO_GET_ACTIVE_ROLE) {
       console.log(`Adding the active role to the user: ${userTag}: ${userId}`);
-      manageActiveRole('add', process.env.SERVER_ID, userId, process.env.ACTIVE_ROLE_ID);
-      table.update( { where: { user_id: userId } });
+      functions.manageActiveRole('add', process.env.SERVER_ID, userId, process.env.ACTIVE_ROLE_ID);
+      result.added.push(`<@${userId}>`);
     }
     // If user was active but then stopped being active
     if (dateNow.diff(moment(lastTimeBeingActive), 'days') >= process.env.DAYS_TO_LOSE_ACTIVE_ROLE) {
       console.log(`Removing the active role from the user: ${userTag}: ${userId}`);
-      manageActiveRole('remove', process.env.SERVER_ID, process.env.ACTIVE_ROLE_ID);
+      functions.manageActiveRole('remove', process.env.SERVER_ID, userId, process.env.ACTIVE_ROLE_ID);
+      result.removed.push(`<@${userId}>`);
       table.destroy({ where: { user_id: userId } });
     }
     // Clear all daily messages count for the last day
@@ -34,6 +38,5 @@ exports.run = async () => {
       table.update({ daily_messages_count: 0 }, { where: { user_id: userId } })
     }
   });
+  return result;
 }
-
-client.login(process.env.TOKEN);
