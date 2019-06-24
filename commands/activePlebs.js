@@ -1,12 +1,15 @@
-interval = require('../modules/activeUsers/interval');
+const interval = require('../modules/activeUsers/interval');
 
-exports.run = (bot, msg, args) => {
+exports.run = async (bot, msg, args) => {
   if (args[0] !== 'update') {
     return;
+  };
+  let run = await interval.run();
+  let result = {
+    added: run.added.join(', '),
+    removed: run.removed.join(', ')
   }
-  interval.run();
-  msg.channel.send('Updating active plebs list...');
-  console.log('Updating active plebs list...');
+  msg.channel.send(`Added Active role to: ${result.added}\nRemoved active role from: ${result.removed}`);
 };
 
 exports.help = {
