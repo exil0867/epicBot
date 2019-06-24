@@ -30,7 +30,6 @@ exports.listen = async (bot, msg, args) => {
         user_id: msg.member.user.id,
         user_tag: msg.member.user.tag,
         daily_messages_count: 1,
-        has_active_role_since: null,
         last_time_being_active: null,
         being_active_since: null,
         last_message_time: dateNow.format('YYYY-MM-DD')

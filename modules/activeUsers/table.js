@@ -13,9 +13,6 @@ const table = sequelize.define(process.env.ACTIVE_USERS_TABLE_NAME, {
   daily_messages_count: {
     type: Sequelize.INTEGER
   },
-  has_active_role_since: {
-    type: Sequelize.STRING
-  },
   last_time_being_active: {
     type: Sequelize.STRING
   },
