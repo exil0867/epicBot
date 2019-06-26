@@ -42,9 +42,13 @@ client.on('ready', () => {
   });
   table.sync();
   setInterval(function() {
-    interval.run()
+  let run = interval.run();
+  let result = {
+    added: run.added.join(', '),
+    removed: run.removed.join(', ')
+  }
+  client.channels.get(process.env.INTERVAL_LOG_CHANNEL).send(`Added Active role to: ${result.added}\nRemoved active role from: ${result.removed}`);
   }, process.env.RUN_INTERVAL_EVERY);
-
 });
 
 client.on('message', message => {
