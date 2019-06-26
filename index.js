@@ -1,8 +1,10 @@
 require('dotenv').config();
 const fs = require('fs');
+const glob = require('glob');
 const { Client } = require('discord.js');
 const client = new Client();
 const commandsMap = new Map();
+const modulesMap = new Set();
 const table = require('./modules/activeUsers/table');
 const interval = require('./modules/activeUsers/interval');
 const config = {
@@ -16,12 +18,17 @@ client.config = config;
 
 client.commands = commandsMap;
 
-fs.readdirSync('./commands/')
-  .filter(file => file.endsWith('.js'))
-  .forEach(file => {
+client.modules = modulesMap;
+
+glob('./commands/*.js', (error, files) => {
+  if (error) {
+    console.log(error);
+    return;
+  }
+  files.forEach(file => {
     console.log(`Loading command ${file}`);
     try {
-      let command = require(`./commands/${file}`);
+      let command = require(file);
       if (typeof command.run !== 'function') {
         throw 'Command is missing the run function!';
       } else if (!command.help || !command.help.name) {
@@ -29,9 +36,29 @@ fs.readdirSync('./commands/')
       }
       commandsMap.set(command.help.name, command);
     } catch (error) {
-      console.error(`Couldn't load command ${f}: ${error}`);
+      console.error(`Couldn't load command ${file}: ${error}`);
     }
   });
+});
+
+glob('./modules/*/index.js', (error, files) => {
+  if (error) {
+    console.log(error);
+    return;
+  }
+  files.forEach(file => {
+    console.log(`Loading module ${file}`);
+    try {
+      let module = require(file);
+      if (typeof module.run !== 'function') {
+        throw 'Module is missing the run function!';
+      }
+      modulesMap.add(module);
+    } catch (error) {
+      console.error(`Couldn't load module ${file}: ${error}`);
+    }
+  });
+});
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag} (ID: ${client.user.id})!`);
@@ -41,38 +68,22 @@ client.on('ready', () => {
     console.log(`Generated invite link:\n${invite}`);
   });
   table.sync();
-  setInterval(function() {
-    interval.run()
+  setInterval(async function() {
+    let run = await interval.run();
+    client.channels.get(process.env.INTERVAL_LOG_CHANNEL).send(`Added Active role to: ${run.added.join(', ')}\nRemoved active role from: ${run.removed.join(', ')}`);
   }, process.env.RUN_INTERVAL_EVERY);
 
 });
 
 client.on('message', message => {
-  if (message.author.bot || !message.guild) {
-    return;
-  }
-  let { content } = message;
-  if (!content.startsWith(config.prefix)) {
-    return;
-  }
-  let split = content.substr(config.prefix.length).split(' ');
+  modulesMap.forEach((module) => {
+    module.run(client, message)
+  })
+  let split = message.content.substr(config.prefix.length).split(' ');
   let label = split[0];
-  let args = split.slice(1);
   if (commandsMap.get(label)) {
-    commandsMap.get(label).run(client, message, args);
+    commandsMap.get(label).run(client, message);
   }
-
-});
-
-client.on('message', message => {
-  if (message.author.bot || !message.guild) {
-    return;
-  }
-  let { content } = message;
-  let split = content.substr(config.prefix.length).split(' ');
-  let label = split[0];
-  let args = split.slice(1);
-  require('./modules/activeUsers/listen').listen(client, message, args);
 });
 
 client.login(config.token);
