@@ -80,10 +80,9 @@ client.on('message', message => {
       message.delete();
     }
     const text = message.content.replace(/:[^:\s]+:|<:[^:\s]+:[0-9]+>|<a:[^:\s]+:[0-9]+>/g, '').replace(/\s+/g, '');
-    console.log(message.content);
     if (text) {
       message.delete();
-      message.channel.send('Your message has been deleted! This channel is in emotes-only mode. <:peeshifar:537055607144841216>').then((botMessage) => {
+      message.channel.send(`<@${message.member.user.id}> Your message has been deleted! This channel is in emotes-only mode. <:peeshifar:537055607144841216>`).then((botMessage) => {
         botMessage.delete(5000);
       }).catch(error => {
         console.log(error);
