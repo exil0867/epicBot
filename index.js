@@ -40,15 +40,15 @@ client.on('ready', () => {
   ]).then(invite => {
     console.log(`Generated invite link:\n${invite}`);
   });
-  table.sync();
-  setInterval(function() {
-  let run = interval.run();
-  let result = {
-    added: run.added.join(', '),
-    removed: run.removed.join(', ')
-  }
-  client.channels.get(process.env.INTERVAL_LOG_CHANNEL).send(`Added Active role to: ${result.added}\nRemoved active role from: ${result.removed}`);
-  }, process.env.RUN_INTERVAL_EVERY);
+  // table.sync();
+  // setInterval(function() {
+  // let run = interval.run();
+  // let result = {
+  //   added: run.added.join(', '),
+  //   removed: run.removed.join(', ')
+  // }
+  // client.channels.get(process.env.INTERVAL_LOG_CHANNEL).send(`Added Active role to: ${result.added}\nRemoved active role from: ${result.removed}`);
+  // }, process.env.RUN_INTERVAL_EVERY);
 });
 
 client.on('message', message => {
@@ -68,15 +68,15 @@ client.on('message', message => {
 
 });
 
-client.on('message', message => {
-  if (message.author.bot || !message.guild) {
-    return;
-  }
-  let { content } = message;
-  let split = content.substr(config.prefix.length).split(' ');
-  let label = split[0];
-  let args = split.slice(1);
-  require('./modules/activeUsers/listen').listen(client, message, args);
-});
+// client.on('message', message => {
+//   if (message.author.bot || !message.guild) {
+//     return;
+//   }
+//   let { content } = message;
+//   let split = content.substr(config.prefix.length).split(' ');
+//   let label = split[0];
+//   let args = split.slice(1);
+//   require('./modules/activeUsers/listen').listen(client, message, args);
+// });
 
 client.login(config.token);
