@@ -49,7 +49,7 @@ let result = {
         console.log(error);
       });
     }
-    Clear all daily messages count for the last day
+    // Clear all daily messages count for the last day
     if (dailyMessagesCount > 0) {
       table.update({ daily_messages_count: 0 }, { where: { user_id: userId } })
     }
