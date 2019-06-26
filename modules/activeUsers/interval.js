@@ -4,13 +4,13 @@ const moment = require('moment');
 const table = require('./table');
 const functions = require('./functions');
 
-exports.run = async () => {
-  let result = {
+exports.run = () => {
+let result = {
     added: [],
     removed: []
   };
-  const usersListQuery = await table.findAll({ attributes: ['user_id', 'user_tag', 'being_active_since', 'daily_messages_count', 'last_time_being_active'] });
-  usersListQuery.map((user) => {
+  const usersListQuery = table.findAll({ attributes: ['user_id', 'user_tag', 'being_active_since', 'daily_messages_count', 'last_time_being_active'] });
+  usersListQuery.map(async(user, index) => {
     const dateNow = moment();
     const beingActiveSince = user.being_active_since;
     const dailyMessagesCount = user.daily_messages_count;
@@ -23,20 +23,37 @@ exports.run = async () => {
     }
     if (dateNow.diff(moment(beingActiveSince), 'days') >= process.env.DAYS_TO_GET_ACTIVE_ROLE) {
       console.log(`Adding the active role to the user: ${userTag}: ${userId}`);
-      functions.manageActiveRole('add', process.env.SERVER_ID, userId, process.env.ACTIVE_ROLE_ID);
-      result.added.push(`<@${userId}>`);
+      await functions.manageActiveRole('add', process.env.SERVER_ID, userId, process.env.ACTIVE_ROLE_ID).then(([tag, id, msg]) => {
+        if (msg === 'added the role') {
+          console.log(`Added the active role to the user: ${tag}: ${id}!`);
+          result.added.push(id);
+        } else if (msg === 'already has the role') {
+          console.log(`User: ${tag}: ${id} already has the active role!`);
+        }
+      }).catch(error => {
+        console.log(error);
+      });
     }
     // If user was active but then stopped being active
-    if (dateNow.diff(moment(lastTimeBeingActive), 'days') >= process.env.DAYS_TO_LOSE_ACTIVE_ROLE) {
+    else if (dateNow.diff(moment(lastTimeBeingActive), 'days') >= process.env.DAYS_TO_LOSE_ACTIVE_ROLE) {
       console.log(`Removing the active role from the user: ${userTag}: ${userId}`);
-      functions.manageActiveRole('remove', process.env.SERVER_ID, userId, process.env.ACTIVE_ROLE_ID);
-      result.removed.push(`<@${userId}>`);
-      table.destroy({ where: { user_id: userId } });
+      functions.manageActiveRole('remove', process.env.SERVER_ID, userId, process.env.ACTIVE_ROLE_ID).then((userTag, userId, resolveMsg) => {
+        if (resolveMsg === 'removed the role') {
+          console.log(`Removed the active role from the user: ${userTag}: ${userId}!`);
+          result.removed.push(`<@${userId}>`);
+        } else if (resolveMsg === 'already does not have the role') {
+          console.log(`user: ${userTag}: ${userId} already does not have the active role!`);
+        }
+        table.destroy({ where: { user_id: userId } });
+      }).catch(error => {
+        console.log(error);
+      });
     }
-    // Clear all daily messages count for the last day
+    Clear all daily messages count for the last day
     if (dailyMessagesCount > 0) {
       table.update({ daily_messages_count: 0 }, { where: { user_id: userId } })
     }
   });
+  console.log(result);
   return result;
 }

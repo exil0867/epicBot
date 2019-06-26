@@ -3,30 +3,33 @@ const { Client } = require('discord.js');
 const client = new Client();
 
 const functions = {
-  manageActiveRole: (action, serverId, memberId, roleId) => {
-    const member = client.guilds.get(serverId).members.get(memberId);
-    if (action === 'add') {
-      if (member.roles.has(roleId)) {
-        console.log(`The user: ${member.user.tag}: ${member.user.id} already has the role!`);
+  manageActiveRole: async (action, serverId, memberId, roleId) => {
+    let promise = new Promise((resolve, reject) => {
+      const member = client.guilds.get(serverId).members.get(memberId);
+      if (action === 'add') {
+        if (!member.roles.has(roleId)) {
+          member.addRole(roleId).then(() => {
+            resolve([member.user.tag, member.user.id, 'added the role']);
+          }).catch((error) => {
+            reject(error);
+          });
+        } else {
+          resolve([member.user.tag, member.user.id, 'already has the role']);
+        }
       }
-      member.addRole(roleId).then(() => {
-        console.log(`Added the role to the user: ${member.user.tag}: ${member.user.id}`);
-      }).catch((error) => {
-        console.error(error);
-      });
-    }
-
-    if (action === 'remove') {
-      if (!member.roles.has(roleId)) {
-        console.log(`The user: ${member.user.tag}: ${member.user.id} already doesn't have the role!`);
+      if (action === 'remove') {
+        if (member.roles.has(roleId)) {
+          member.removeRole(roleId).then(() => {
+            resolve([member.user.tag, member.user.id, 'removed the role']);
+          }).catch((error) => {
+            reject(error);
+          });
+        } else {
+          resolve([member.user.tag, member.user.id, 'already does not have the role']);
+        }
       }
-      member.removeRole(roleId).then(() => {
-        console.log(`Removed the role from the user ${member.user.tag}: ${member.user.id}`);
-      }).catch((error) => {
-        console.log(error);
-        console.log(`Couldn't remove the role from the user ${member.user.tag}: ${member.user.id}`);
-      });
-    }
+    });
+    return await promise;
   }
 }
 
