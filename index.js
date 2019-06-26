@@ -78,6 +78,7 @@ client.on('message', message => {
     }
     if (message.author.bot) {
       message.delete();
+      return;
     }
     const text = message.content.replace(/:[^:\s]+:|<:[^:\s]+:[0-9]+>|<a:[^:\s]+:[0-9]+>/g, '').replace(/\s+/g, '');
     if (text) {
