@@ -4,12 +4,12 @@ const moment = require('moment');
 const table = require('./table');
 const functions = require('./functions');
 
-exports.run = async () => {
+exports.run = () => {
   let result = {
     added: [],
     removed: []
   };
-  const usersListQuery = await table.findAll({ attributes: ['user_id', 'user_tag', 'being_active_since', 'daily_messages_count', 'last_time_being_active'] });
+  const usersListQuery = table.findAll({ attributes: ['user_id', 'user_tag', 'being_active_since', 'daily_messages_count', 'last_time_being_active'] });
   usersListQuery.map((user) => {
     const dateNow = moment();
     const beingActiveSince = user.being_active_since;

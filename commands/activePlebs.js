@@ -1,10 +1,10 @@
 const interval = require('../modules/activeUsers/interval');
 
-exports.run = async (bot, msg, args) => {
+exports.run = (bot, msg, args) => {
   if (args[0] !== 'update') {
     return;
   };
-  let run = await interval.run();
+  let run = interval.run();
   let result = {
     added: run.added.join(', '),
     removed: run.removed.join(', ')
