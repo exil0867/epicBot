@@ -16,6 +16,18 @@ exports.run = async (client, message) => {
     user_id: message.member.user.id
   };
   const id = await table.findOne({ where: idObject });
+  const blacklist = {
+    users: process.env.BLACKLISTED_USERS.split(',').map(p => p.trim().toLowerCase()),
+    channels: process.env.BLACKLISTED_CHANNELS.split(',').map(p => p.trim().toLowerCase())
+  }
+  if (blacklist.channels.includes(message.channel.id)) {
+    console.log(`Blacklisted channel lol`);
+    return;
+  }
+  if (blacklist.users.includes(message.member.user.id)) {
+    console.log(`Skipped a message from a blacklisted user: ${message.member.user.tag}: ${message.member.user.id}`)
+    return;
+  }
   if (id) {
     if (!(id.get('daily_messages_count') >= process.env.DAILY_MAX_MESSAGES)) {
       await id.increment('daily_messages_count');
