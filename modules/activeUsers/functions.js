@@ -8,6 +8,7 @@ const functions = {
     if (action === 'add') {
       if (member.roles.has(roleId)) {
         console.log(`The user: ${member.user.tag}: ${member.user.id} already has the role!`);
+        return;
       }
       member.addRole(roleId).then(() => {
         console.log(`Added the role to the user: ${member.user.tag}: ${member.user.id}`);
@@ -19,6 +20,7 @@ const functions = {
     if (action === 'remove') {
       if (!member.roles.has(roleId)) {
         console.log(`The user: ${member.user.tag}: ${member.user.id} already doesn't have the role!`);
+        return;
       }
       member.removeRole(roleId).then(() => {
         console.log(`Removed the role from the user ${member.user.tag}: ${member.user.id}`);
