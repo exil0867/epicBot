@@ -30,7 +30,6 @@ exports.run = async (client, message) => {
   }
   if (id) {
     if (dateNow.diff(moment(id.get('last_message_time')), 'minutes') < process.env.ACTIVE_MODULE_COOLDOWN) {
-      console.log(`COOLDOWN bruh Skipped a message from a user: ${message.member.user.tag}: ${message.member.user.id}`);
       return;
     }
     if (!(id.get('daily_messages_count') >= process.env.DAILY_MAX_MESSAGES)) {
