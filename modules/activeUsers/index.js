@@ -17,15 +17,17 @@ exports.run = async (client, message) => {
   };
   const id = await table.findOne({ where: idObject });
   const blacklist = {
+    channels: process.env.BLACKLISTED_CHANNELS.split(',').map(p => p.trim().toLowerCase()),
     users: process.env.BLACKLISTED_USERS.split(',').map(p => p.trim().toLowerCase()),
-    channels: process.env.BLACKLISTED_CHANNELS.split(',').map(p => p.trim().toLowerCase())
+    role: process.env.BLACKLISTED_ROLE
   }
   if (blacklist.channels.includes(message.channel.id)) {
-    console.log(`Blacklisted channel lol`);
+    return;
+  }
+  if (message.member.roles.find(r => r.id == blacklist.role)){
     return;
   }
   if (blacklist.users.includes(message.member.user.id)) {
-    console.log(`Skipped a message from a blacklisted user: ${message.member.user.tag}: ${message.member.user.id}`)
     return;
   }
   if (id) {
