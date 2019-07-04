@@ -29,18 +29,22 @@ exports.run = async (client, message) => {
     return;
   }
   if (id) {
+    if (dateNow.diff(moment(id.get('last_message_time')), 'minutes') < process.env.ACTIVE_MODULE_COOLDOWN) {
+      console.log(`COOLDOWN bruh Skipped a message from a user: ${message.member.user.tag}: ${message.member.user.id}`);
+      return;
+    }
     if (!(id.get('daily_messages_count') >= process.env.DAILY_MAX_MESSAGES)) {
       await id.increment('daily_messages_count');
-      await id.update({ last_message_time: dateNow.format('YYYY-MM-DD') }, { where: idObject });
+      await id.update({ last_message_time: dateNow.format() }, { where: idObject });
       console.log(`Counted a message from ${message.member.user.tag}: ${message.member.user.id}, Their daily total messages is now: ${id.get('daily_messages_count') + 1}`);
       return;
     }
     console.log(`User ${message.member.user.tag}: ${message.member.user.id} has already reached their daily max messages count!`);
     if (id.get('being_active_since') === null) {
-      await id.update({ being_active_since: dateNow.format('YYYY-MM-DD'), last_time_being_active: dateNow.format('YYYY-MM-DD'), last_message_time: dateNow.format('YYYY-MM-DD') }, { where: idObject });
+      await id.update({ being_active_since: dateNow.format('YYYY-MM-DD'), last_time_being_active: dateNow.format('YYYY-MM-DD'), last_message_time: dateNow.format() }, { where: idObject });
       return;
     }
-    await id.update({ last_time_being_active: dateNow.format('YYYY-MM-DD'), last_message_time: dateNow.format('YYYY-MM-DD') }, { where: idObject });
+    await id.update({ last_time_being_active: dateNow.format('YYYY-MM-DD'), last_message_time: dateNow.format() }, { where: idObject });
 
   } else {
     try {
@@ -50,7 +54,7 @@ exports.run = async (client, message) => {
         daily_messages_count: 1,
         last_time_being_active: null,
         being_active_since: null,
-        last_message_time: dateNow.format('YYYY-MM-DD')
+        last_message_time: dateNow.format()
       });
       console.log(`Added a new user ${message.member.user.tag}: ${message.member.user.id} to the database!`);
     } catch (e) {
