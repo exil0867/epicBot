@@ -1,3 +1,4 @@
+require('dotenv').config();
 const interval = require('../modules/activeUsers/interval');
 
 exports.run = async (client, message) => {
@@ -5,10 +6,10 @@ exports.run = async (client, message) => {
     return;
   }
   let { content } = message;
-  if (!content.startsWith(config.prefix)) {
+  if (!content.startsWith(process.env.PREFIX)) {
     return;
   }
-  let split = content.substr(config.prefix.length).split(' ');
+  let split = content.substr(process.env.PREFIX.length).split(' ');
   let label = split[0];
   let args = split.slice(1);
   if (args[0] !== 'update') {
