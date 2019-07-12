@@ -21,7 +21,7 @@ exports.run = async () => {
     const userTag = user.user_tag;
     // If user exists in the server
     if (!client.guilds.get(process.env.SERVER_ID).members.has(userId)) {
-      // table.destroy({ where: { user_id: userId } });
+      table.destroy({ where: { user_id: userId } });
       return;
     }
     // If user started being active
