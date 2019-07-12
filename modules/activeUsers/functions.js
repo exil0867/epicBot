@@ -7,7 +7,6 @@ const functions = {
     const member = client.guilds.get(serverId).members.get(memberId);
     if (action === 'add') {
       if (!member) {
-        console.log(`The user: ${member.user.tag}: ${member.user.id} is not in the server!`);
         return;
       }
       if (member.roles.has(roleId)) {
@@ -23,7 +22,6 @@ const functions = {
 
     if (action === 'remove') {
       if (!member) {
-        console.log(`The user: ${member.user.tag}: ${member.user.id} is not in the server!`);
         return;
       }
       if (!member.roles.has(roleId)) {
