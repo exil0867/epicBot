@@ -6,9 +6,6 @@ const functions = {
   manageActiveRole: (action, serverId, memberId, roleId) => {
     const member = client.guilds.get(serverId).members.get(memberId);
     if (action === 'add') {
-      if (!client.guilds.get(serverId).members.has(memberId)) {
-        return;
-      }
       if (member.roles.has(roleId)) {
         console.log(`The user: ${member.user.tag}: ${member.user.id} already has the role!`);
         return;
@@ -21,9 +18,6 @@ const functions = {
     }
 
     if (action === 'remove') {
-      if (!!client.guilds.get(serverId).members.has(memberId)) {
-        return;
-      }
       if (!member.roles.has(roleId)) {
         console.log(`The user: ${member.user.tag}: ${member.user.id} already doesn't have the role!`);
         return;

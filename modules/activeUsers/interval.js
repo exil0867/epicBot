@@ -3,6 +3,7 @@ const Sequelize = require('sequelize');
 const moment = require('moment');
 const table = require('./table');
 const functions = require('./functions');
+const client = new Client();
 
 exports.run = async () => {
   let result = {
@@ -17,6 +18,11 @@ exports.run = async () => {
     const lastTimeBeingActive = user.last_time_being_active;
     const userId = user.user_id;
     const userTag = user.user_tag;
+    // If user exists in the server
+    if (!client.guilds.get(process.env.SERVER_ID).members.has(userId)) {
+      // table.destroy({ where: { user_id: userId } });
+      return;
+    }
     // If user started being active
     if (beingActiveSince == null) {
       return;
@@ -40,3 +46,5 @@ exports.run = async () => {
   });
   return result;
 }
+
+client.login(process.env.TOKEN);
