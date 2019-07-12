@@ -3,6 +3,7 @@ const Sequelize = require('sequelize');
 const moment = require('moment');
 const table = require('./table');
 const functions = require('./functions');
+const { Client } = require('discord.js');
 const client = new Client();
 
 exports.run = async () => {
