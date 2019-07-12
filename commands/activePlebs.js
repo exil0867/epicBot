@@ -17,11 +17,7 @@ exports.run = async (client, message) => {
     return;
   };
   let run = await interval.run();
-  let feedbackEmbed = new RichEmbed()
-  .setColor('#ffb6c1')
-  .addField('Added Active role to:', run.added.join(', '))
-  .addField('Removed active role from:', run.removed.join(', '));
-  message.channel.send(feedbackEmbed);
+  message.channel.send(`Added Active role to: ${run.added.join(', ')}\nRemoved active role from: ${run.removed.join(', ')}`);
 };
 
 exports.help = {
