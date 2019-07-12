@@ -6,7 +6,7 @@ const functions = {
   manageActiveRole: (action, serverId, memberId, roleId) => {
     const member = client.guilds.get(serverId).members.get(memberId);
     if (action === 'add') {
-      if (!member) {
+      if (!client.guilds.get(serverId).members.has(memberId)) {
         return;
       }
       if (member.roles.has(roleId)) {
@@ -21,7 +21,7 @@ const functions = {
     }
 
     if (action === 'remove') {
-      if (!member) {
+      if (!!client.guilds.get(serverId).members.has(memberId)) {
         return;
       }
       if (!member.roles.has(roleId)) {
