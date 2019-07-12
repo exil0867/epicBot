@@ -1,5 +1,6 @@
 require('dotenv').config();
 const interval = require('../modules/activeUsers/interval');
+const { RichEmbed } = require('discord.js');
 
 exports.run = async (client, message) => {
   if (message.author.bot || !message.guild) {
@@ -16,7 +17,11 @@ exports.run = async (client, message) => {
     return;
   };
   let run = await interval.run();
-  message.channel.send(`Added Active role to: ${run.added.join(', ')}\nRemoved active role from: ${run.removed.join(', ')}`);
+  let feedbackEmbed = new RichEmbed()
+  .setColor('#ffb6c1')
+  .addField('Added Active role to:', run.added.join(', '))
+  .addField('Removed active role from:', run.removed.join(', '));
+  message.channel.send(feedbackEmbed);
 };
 
 exports.help = {
