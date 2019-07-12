@@ -16,6 +16,11 @@ exports.run = async (client, message) => {
   if (args[0] !== 'update') {
     return;
   };
+  // Note: BLACKLISTED_ROLE is basically the mods role so i should add a seperate env variable for the following check
+  if (!message.member.roles.find(r => r.id == process.env.BLACKLISTED_ROLE)){
+    message.channel.send(`<@${message.member.user.id}> Hehe you are not a mod <:peeshifar:537055607144841216>`);
+    return;
+  }
   let run = await interval.run();
   let feedbackEmbed = new RichEmbed()
   .setColor('#ffb6c1')
