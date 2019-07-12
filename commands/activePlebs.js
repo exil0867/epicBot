@@ -17,12 +17,11 @@ exports.run = async (client, message) => {
     return;
   };
   let run = await interval.run();
-  message.channel.send(`Added Active role to: ${run.added.join(', ')}\nRemoved active role from: ${run.removed.join(', ')}`);
   let feedbackEmbed = new RichEmbed()
   .setColor('#ffb6c1')
-  .setTitle('Added active role to:')
-  .addField('Added Active role to:', `${run.added.join(', ')}\nRemoved active role from: ${run.removed.join(', ')}`)
-channel.send(feedbackEmbed);
+  .addField('Added Active role to:', run.added.join(', '))
+  .addField('Removed active role from:', run.removed.join(', '));
+  await message.channel.send(feedbackEmbed);
 };
 
 exports.help = {
