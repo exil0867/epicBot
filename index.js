@@ -70,7 +70,11 @@ client.on('ready', () => {
   table.sync();
   setInterval(async function() {
     let run = await interval.run();
-    client.channels.get(process.env.INTERVAL_LOG_CHANNEL).send(`Added Active role to: ${run.added.join(', ')}\nRemoved active role from: ${run.removed.join(', ')}`);
+    let feedbackEmbed = new RichEmbed()
+      .setColor('#ffb6c1')
+      .addField('Added Active role to:', (run.added.length == 0) ? 'None' : run.added.join(', '))
+      .addField('Removed active role from:', (run.removed.length == 0) ? 'None' : run.removed.join(', '));
+    client.channels.get(process.env.INTERVAL_LOG_CHANNEL).send(feedbackEmbed);
   }, process.env.RUN_INTERVAL_EVERY);
 
 });
